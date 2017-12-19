@@ -10,8 +10,8 @@ import lombok.Data;
  * 角色表
  */
 @Data
-public class SysRole implements Serializable {
-	private static final long serialVersionUID = 6320941908222932112L;
+public class SysRole {
+//	private static final long serialVersionUID = 6320941908222932112L;
 	/**
 	 * 角色ID
 	 */
@@ -44,7 +44,7 @@ public class SysRole implements Serializable {
 	/**
 	 * 角色包含的权限列表
 	 */
-	List<SysPrivilege> privilegeList;
+//	List<SysPrivilege> privilegeList;
 
 
 
