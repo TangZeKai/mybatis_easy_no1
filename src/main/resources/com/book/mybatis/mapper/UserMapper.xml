@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+
+
+
+
+
+
+<!--namespace配置成接口relative名称 mybatis根据这个将xml与接口连接起来-->
+<mapper namespace="com.book.mybatis.mapper.UserMapper">
+
+  <!--resultmap配置结果映射-->
+    <!--type 查询列映射的java类型-->
+    <!--extend 可选 继承其他usermaap-->
+    <!--automapping 启动非映射字段=没有在resultmap中配置的字段的自动映射功能-->
+
+
+    <resultMap id="userMap" type="com.book.mybatis.entity.SysUser">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="userPassword" column="user_password"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="userInfo" column="user_info"/>
+        <result property="headImg" column="head_img" jdbcType="BLOB"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <insert id="insert" >
+        INSERT INTO sys_user(id,user_name,user_password,user_email,user_info,head_img,create_time)
+                VALUES (
+                    #{id},
+                    #{userName},
+                    #{userPassword},
+                    #{userEmail},
+                    #{userInfo},
+                    #{headImg,jdbcType=BLOB},
+                    #{createTime,jdbcType=DATE}
+                )
+    </insert>
+    <insert id="insert2" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_user(user_name,user_password,user_email,user_info,head_img,create_time)
+        VALUES (
+#             {id},
+            #{userName},
+            #{userPassword},
+            #{userEmail},
+            #{userInfo},
+            #{headImg,jdbcType=BLOB},
+            #{createTime,jdbcType=DATE}
+        )
+    </insert>
+
+    <!--id 唯一标识符-->
+    <!--resultmap 返回值的类型和映射关系-->
+    <!--#{？} ？大多是传入参数名-->
+    <select id="selectByIdMap" resultMap="userMap">
+        SELECT * FROM sys_user WHERE id=#{id}
+    </select>
+
+    <!--作用同上 未使用resultmap  直接写了返回类型 区别resultmap&resultType-->
+    <select id="selectByIdType" resultType="com.book.mybatis.entity.SysUser">
+    SELECT * FROM sys_user WHERE id=#{id}
+    </select>
+
+
+<!--不使用驼峰-->
+    <select id="selectAll" resultMap="userMap">
+        SELECT id,
+            user_name,
+            user_password,
+            user_email,
+            user_info,
+            head_img,
+            create_time
+        FROM sys_user
+    </select>
+
+    <!--使用驼峰--> <!--这里 用resultMap id之后的数据都不显示不知道什么情况-->
+    <select id="selectAllCamel" resultType="com.book.mybatis.entity.SysUser">
+        SELECT id,
+        user_name userName,
+        user_password userPassword,
+        user_email userEmail,
+        user_info userInfo,
+        head_img headImg,
+        create_time createTime
+        FROM sys_user
+    </select>
+
+    <!--这里sysRole就行 因为配置里写了别名设置-->
+    <select id="selectRolesByUserId" resultType="com.book.mybatis.entity.SysRole">
+        SELECT r.id,
+        r.role_name,
+        r.enabled,
+        r.create_by,
+        r.create_time
+        FROM sys_user u
+        INNER JOIN sys_user_role ur ON u.id=ur.user_id
+        INNER JOIN sys_role r ON r.id=ur.role_id
+        WHERE u.id=#{userId}
+    </select>
+
+
+
+
+</mapper>
